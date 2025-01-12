@@ -11,7 +11,7 @@ if kcadm.sh get realms/${REALM_NAME} | grep -q ${REALM_NAME}; then
   echo -e "Successfully Deleted the Client and Realm\n"
 fi
 
-kcadm.sh create realms -s realm=test -s enabled=true
+kcadm.sh create realms -s realm=test -s enabled=true -s registrationAllowed=true
 
 kcadm.sh create users -s username=test -s enabled=true -s firstName=Theo -s lastName=Tester -s email=test@example.com -r $REALM_NAME
 kcadm.sh set-password -r $REALM_NAME --username test --new-password test-password
@@ -31,8 +31,7 @@ CID=$(kcadm.sh create clients -r $REALM_NAME -i -f - <<EOF
   "publicClient": true,
   "protocol": "openid-connect",
   "attributes": {
-    "post.logout.redirect.uris": "+",
-    "dpop.bound.access.tokens": "true"
+    "post.logout.redirect.uris": "+"
   }
 }
 EOF

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/UserInfoView.vue'
+import UserInfoView from '../views/UserInfoView.vue'
+import ServerInfoView from '../views/ServerInfoView.vue'
+import TokenIntrospectionView from "@/views/TokenIntrospectionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +9,17 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: UserInfoView,
+    },
+    {
+      path: '/serverInfo',
+      name: 'server-info',
+      component: ServerInfoView,
+    },
+    {
+      path: '/tokenIntrospection',
+      name: 'token-introspection',
+      component: TokenIntrospectionView,
     },
     {
       path: '/protectedResource',

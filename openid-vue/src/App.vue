@@ -1,6 +1,50 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import * as clientWithState from './auth'
+import { onMounted } from 'vue';
+
+const sessionState = clientWithState.sessionState()
+const iframeUrl = clientWithState.checkSessionIframe();
+const clientId = clientWithState.clientId();
+
+let stat = "unchanged";
+let mes = clientId + " " + sessionState;
+
+function onIframeLoad() {
+  let targetOrigin = 'http://localhost:8080'; // Validates origin
+  let opFrameId: string = "session";
+  let timerID: number;
+
+  function check_session() {
+    let win: WindowProxy = window.parent.frames[opFrameId].contentWindow
+    win.postMessage(mes, 'http://localhost:8080');
+  }
+
+  function setTimer() {
+    check_session();
+    timerID = setInterval(check_session, 1000);
+  }
+
+  window.addEventListener("message", receiveMessage, false);
+
+  function receiveMessage(e: MessageEvent) {
+    if (e.origin !== targetOrigin) {
+      return;
+    }
+
+    stat = e.data;
+
+    if (stat === "changed") {
+      clearInterval(timerID);
+      clientWithState.loginWithPrompt("none")
+    }
+  }
+
+  setTimer()
+  console.log("iframe initialized")
+}
+
 </script>
 
 <template>
@@ -10,10 +54,20 @@ import HelloWorld from './components/HelloWorld.vue'
 
       <nav>
         <RouterLink to="/">UserInfo</RouterLink>
+        <!-- doesn't work with a public client, missing the authentication
+        <RouterLink to="/tokenIntrospection">TokenIntrospection</RouterLink>
+         -->
+        <RouterLink to="/serverInfo">ServerInfo</RouterLink>
+        <!--
         <RouterLink to="/protectedResource">ProtectedResource</RouterLink>
+        -->
       </nav>
     </div>
   </header>
+
+  <iframe v-if="sessionState" :src=iframeUrl height="0" width="0" id="session" sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin"
+  @load="onIframeLoad">
+  </iframe>
 
   <RouterView />
 </template>

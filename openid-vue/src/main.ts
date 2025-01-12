@@ -10,6 +10,7 @@ import * as clientWithState from './auth'
 
 // Authorization server's Issuer Identifier URL
 let server: URL = new URL('http://localhost:8080/realms/test')
+// let server: URL = new URL('http://localhost:8081/auth/realms/test')
 let clientId: string = 'openid-vue'
 // end of prerequisites
 

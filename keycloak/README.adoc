@@ -24,3 +24,11 @@ podman compose up --build --force-recreate
 podman exec keycloak_keycloak_1 /create-clients.sh
 ----
 
+== Cleanups
+
+Delete all data from the Keycloak volume:
+
+[source,bash]
+----
+podman volume rm -f keycloak_kc_data
+----
