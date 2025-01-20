@@ -1,0 +1,12 @@
+= Authentication demo for Keycloak
+
+== What to see here
+
+This is an example project to show different capabilities of OpenID Connect standards:
+
+. Flow to check if a user is logged in
+. Flow to log in user
+. OpenID Connect Session Management to check if the user is still logged in
+. ...
+
+
