@@ -16,7 +16,7 @@ function accountConsole() {
 </pre>
 <div v-if="idToken">
     ID Token:
-    <pre>
+<pre>
 {{ jose.decodeJwt(idToken) }}
 </pre>
 </div>
