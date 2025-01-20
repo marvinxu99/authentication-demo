@@ -10,7 +10,7 @@ import * as oauth from "oauth4webapi";
 let config : client.Configuration
 let client_id : string
 
-export async function loginWithPrompt(prompt?: string, kcAction?: string, extraScope?: string) {
+export async function loginWithPrompt(prompt?: string, kcAction?: string, extraScope?: string, acr?: string) {
   let nonce!: string | undefined
 
   let code_verifier!: string | undefined
@@ -41,6 +41,10 @@ export async function loginWithPrompt(prompt?: string, kcAction?: string, extraS
 
   if (kcAction) {
     parameters.kc_action = kcAction;
+  }
+
+  if (acr) {
+    parameters.acr_values = acr;
   }
 
   /**
@@ -153,6 +157,10 @@ export async function fetchProtectedResource(url: URL, method: string, body?: Fe
 
 export function sessionState() {
   return state.tokens?.session_state
+}
+
+export function idToken() {
+  return state.tokens?.id_token
 }
 
 export function checkSessionIframe() {

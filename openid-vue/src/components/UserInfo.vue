@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import * as clientWithState from '../auth'
+import * as jose from 'jose'
 const res = clientWithState.sessionState() ? await clientWithState.fetchUserInfo() : null
-console.log(res)
+const idToken = clientWithState.idToken()
+function accountConsole() {
+  return 'http://localhost:8080/realms/test/account?referrer=openid-vue&referrer_uri=' + encodeURIComponent(window.location.href)
+}
 </script>
 
 <template>
@@ -10,6 +14,13 @@ console.log(res)
 <pre>
 {{ JSON.stringify(res, null, 2) }}
 </pre>
+<div v-if="idToken">
+    ID Token:
+    <pre>
+{{ jose.decodeJwt(idToken) }}
+</pre>
+</div>
+
   <br>
   <a @click="clientWithState.logout()">log out now</a>
     or <a @click="clientWithState.loginWithPrompt('login', undefined)">re-authenticate</a>
@@ -34,7 +45,9 @@ console.log(res)
     <a @click="clientWithState.loginWithPrompt(undefined, 'UPDATE_PROFILE')">Update profile</a> or
     <a @click="clientWithState.loginWithPrompt(undefined, 'UPDATE_PASSWORD')">Update password</a> or
     <a @click="clientWithState.loginWithPrompt(undefined, undefined, 'address')">Extra scope address</a> or
-    <a :href="'http://localhost:8080/realms/test/account?referrer=openid-vue&referrer_uri=' + encodeURIComponent('http://localhost:5173/#test')">Account console</a>
+    <a @click="clientWithState.loginWithPrompt(undefined, undefined, 'acr', '2')">ACR 2</a> or
+    <!-- adding street and country for address plus others -->
+    <a :href="accountConsole()" >Account console</a>
   </div>
 
 </template>

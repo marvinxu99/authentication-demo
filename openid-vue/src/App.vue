@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import * as clientWithState from './auth'
-import { onMounted } from 'vue';
 
 const sessionState = clientWithState.sessionState()
 const iframeUrl = clientWithState.checkSessionIframe();
@@ -50,7 +48,6 @@ function onIframeLoad() {
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
 
       <nav>
         <RouterLink to="/">UserInfo</RouterLink>
