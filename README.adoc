@@ -38,14 +38,14 @@ IFrame `+.../openid-connect/login-status-iframe.html+` + JavaScript sendMessage 
 ** Update Password
 
 . Account Console (non-standard) +
-`+.../account?referrer=openid-vue&referrer_uri=http%3A%2F%2Flocalhost%3A5173%2F+`
+`+.../account?referrer=openid-vue&referrer_uri=...`
 
 . Add extra scope address to get address data +
 `+...openid-connect/auth?...&scope=openid+email+address...+` => scopes in token
 
 . Create additional fields for scope address +
 Go to realm `test` +
-Client scopes -> `address`` -> Mappers -> `street`, `locality`, `region`, `postal_code`, `country`, `formatted` +
+Client scopes -> `address` -> Mappers -> `street`, `locality`, `region`, `postal_code`, `country`, `formatted` +
 Realm settings -> User profile -> Create attribute `formatted` +
 Enabled and required when scope `address` is requested +
 Who can edit: Admins and Users +
