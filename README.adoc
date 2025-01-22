@@ -2,22 +2,27 @@
 
 == What to see here
 
-This is an example project to show different capabilities of OpenID Connect standards:
+This is an example project to show different capabilities of OpenID Connect standards.
+
+Watch the Network console with filtering for only *Fetch/XHR* and *Doc* type requests.
 
 . Loading information about the server: .well-known/openid-configuration` based on the issuer +
 `+http://localhost:8080/realms/test+` plus `/.well-known/openid-configuration`
 
 . Check if a user is logged in +
-`+...openid-connect/auth?redirect_uri=...&prompt=none...+` => `+...?error=login_required...+`
+`+.../auth?redirect_uri=...&prompt=none...+` => `+...?error=login_required...+`
 
 . Log in the user +
-`+...openid-connect/auth?redirect_uri=...&prompt=login...+` => `+...session_state=...code=...+`
+`+.../auth?redirect_uri=...&prompt=login...+` => `+...session_state=...code=...+`
+
+. Use PAR instead of the URI (can be enforced von Keycloak side) +
+POST query parameters to `ext/par/request`, =...&prompt=login...+` => `+...session_state=...code=...+`
 
 . Get tokens +
-`+...token+` + POST with `code` -> ID-Token, Access Token, Refresh Token, ...
+`POST with everything to server endpoint, then open `+.../auth?request_uri=...` -> ID-Token, Access Token, Refresh Token, ...
 
 . OpenID Connect Session Management to check if the user is still logged in +
-IFrame `+.../openid-connect/login-status-iframe.html+` + JavaScript sendMessage / receiveMessage
+IFrame `+.../login-status-iframe.html+` + `session_state` + JavaScript `sendMessage()` / `receiveMessage()`
 => Check if the user is still logged in using a cookie
 
 . Inspect the ID token
@@ -27,21 +32,26 @@ IFrame `+.../openid-connect/login-status-iframe.html+` + JavaScript sendMessage 
 . Refresh the access token when necessary
 
 . Logout +
-`+.../openid-connect/logout?post_logout_redirect_uri=...&id_token_hint=...&client_id=...+`
+`+.../logout?post_logout_redirect_uri=...&id_token_hint=...&client_id=...+`
 => Redirect to client URL
 
 . Re-authenticate when already logged in  +
-`+...openid-connect/auth?redirect_uri=...&prompt=login...+` => `+...session_state=...code=...+`
+`+.../auth?redirect_uri=...&prompt=login...+` => `+...session_state=...code=...+`
+
+. Enforce second factor authentication (can also be enforced in Keycloak client configuration) +
+`+.../auth?...acr_values=2...+` => level shown in the token
 
 . Application Initiated Actions (non-standard)
-** Update Profile
-** Update Password
+** Update Profile +
+`+.../auth?redirect_uri=...&kc_action=UPDATE_PROFILE...+` => `+...session_state=...code=...+`
+** Update Password +
+`+.../auth?redirect_uri=...&kc_action=UPDATE_PASSWORD...+` => `+...session_state=...code=...+`
 
 . Account Console (non-standard) +
 `+.../account?referrer=...&referrer_uri=...+`
 
 . Add extra scope address to get address data +
-`+...openid-connect/auth?...&scope=openid+email+address...+` => scopes in token
+`+.../auth?...&scope=openid+email+address...+` => scopes in token
 
 . Create additional fields for scope address +
 Go to realm `test` +
@@ -54,7 +64,7 @@ Input Type: text area
 . Register a new user +
 Go to realm `test` -> Realm settings -> Login -> enable *User registration* +
 See server info change with new `prompt` value `create` +
-`+...openid-connect/auth?redirect_uri=...&prompt=create...+` => `+...session_state=...code=...+`
+`+.../auth?redirect_uri=...&prompt=create...+` => `+...session_state=...code=...+`
 
 == How to run it
 

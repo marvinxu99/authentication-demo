@@ -10,7 +10,11 @@ import * as oauth from "oauth4webapi";
 let config : client.Configuration
 let client_id : string
 
-export async function loginWithPrompt(prompt?: string, kcAction?: string, extraScope?: string, acr?: string) {
+class LoginOptions {
+  prompt?: string; kcAction?: string; extraScope?: string; acr?: string; par?: boolean
+}
+
+export async function loginWithPrompt(options : LoginOptions) {
   let nonce!: string | undefined
 
   let code_verifier!: string | undefined
@@ -31,20 +35,20 @@ export async function loginWithPrompt(prompt?: string, kcAction?: string, extraS
     code_challenge_method
   }
 
-  if (extraScope) {
-    parameters.scope = parameters.scope + ' ' + extraScope;
+  if (options.extraScope) {
+    parameters.scope = parameters.scope + ' ' + options.extraScope;
   }
 
-  if (prompt) {
-    parameters.prompt = prompt;
+  if (options.prompt) {
+    parameters.prompt = options.prompt;
   }
 
-  if (kcAction) {
-    parameters.kc_action = kcAction;
+  if (options.kcAction) {
+    parameters.kc_action = options.kcAction;
   }
 
-  if (acr) {
-    parameters.acr_values = acr;
+  if (options.acr) {
+    parameters.acr_values = options.acr;
   }
 
   /**
@@ -60,7 +64,12 @@ export async function loginWithPrompt(prompt?: string, kcAction?: string, extraS
     sessionStorage.removeItem("nonce");
   }
 
-  let redirectTo = client.buildAuthorizationUrl(config, parameters)
+  let redirectTo
+  if (options.par && config.serverMetadata().pushed_authorization_request_endpoint) {
+    redirectTo = await client.buildAuthorizationUrlWithPAR(config, parameters)
+  } else {
+    redirectTo = client.buildAuthorizationUrl(config, parameters);
+  }
 
   console.log('redirecting to', redirectTo.href)
   window.location.href = redirectTo.href
@@ -89,7 +98,7 @@ export async function init(server: URL, clientId: string, onSuccess: () => void)
     initState(config, null, params.get('error'));
     onSuccess();
   } else if (!params.has('code')) {
-    loginWithPrompt("none");
+    loginWithPrompt({prompt: 'none' });
   } else if (params.has('code')) {
     // one eternity later, the user lands back on the redirect_uri
     // Authorization Code Grant
