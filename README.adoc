@@ -38,7 +38,7 @@ IFrame `+.../openid-connect/login-status-iframe.html+` + JavaScript sendMessage 
 ** Update Password
 
 . Account Console (non-standard) +
-`+.../account?referrer=openid-vue&referrer_uri=...`
+`+.../account?referrer=openid-vue&referrer_uri=...+`
 
 . Add extra scope address to get address data +
 `+...openid-connect/auth?...&scope=openid+email+address...+` => scopes in token
