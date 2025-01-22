@@ -27,7 +27,7 @@ IFrame `+.../openid-connect/login-status-iframe.html+` + JavaScript sendMessage 
 . Refresh the access token when necessary
 
 . Logout +
-`+.../openid-connect/logout?post_logout_redirect_uri=...&id_token_hint=...&client_id=...
+`+.../openid-connect/logout?post_logout_redirect_uri=...&id_token_hint=...&client_id=...+`
 => Redirect to client URL
 
 . Re-authenticate when already logged in  +
