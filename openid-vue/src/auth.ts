@@ -10,6 +10,7 @@ import * as oauth from "oauth4webapi";
 
 let config : client.Configuration
 let client_id : string
+let state: { config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers, error?: String}
 
 class LoginOptions {
   prompt?: string; kcAction?: string; extraScope?: string; acr?: string; par?: boolean
@@ -142,8 +143,6 @@ export async function init(server: URL, clientId: string, onSuccess: () => void)
 
   }
 }
-
-let state: { config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers | null, error?: String}
 
 export function initState(config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers, error?: String) {
   state = { config, tokens, error }
