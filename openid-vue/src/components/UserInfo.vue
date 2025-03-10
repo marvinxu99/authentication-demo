@@ -1,10 +1,23 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import * as clientWithState from '../auth'
 import * as jose from 'jose'
-const res = clientWithState.sessionState() ? await clientWithState.fetchUserInfo() : null
-const idToken = clientWithState.idToken()
+import type { UserInfoResponse } from "oauth4webapi"
+
+const res = ref<UserInfoResponse | null>(null)
+const idToken = ref<string | undefined>(undefined)
+
+//const res = clientWithState.sessionState() ? await clientWithState.fetchUserInfo() : null
+//const idToken = clientWithState.idToken()
+onMounted(async () => {
+  if (clientWithState.sessionState()) {
+    res.value = await clientWithState.fetchUserInfo()
+    idToken.value = clientWithState.idToken()
+  }
+})
+
 function accountConsole() {
-  return 'http://localhost:8080/realms/test/account?referrer=openid-vue&referrer_uri=' + encodeURIComponent(window.location.href)
+  return 'http://localhost:8080/realms/MyRealm/account?referrer=openid-vue&referrer_uri=' + encodeURIComponent(window.location.href)
 }
 </script>
 
@@ -16,18 +29,18 @@ function accountConsole() {
       {{ JSON.stringify(res, null, 2) }}
       </pre>
     </details>
-  <div v-if="idToken">
-    <details>
-      <summary>ID Token</summary>
-      <pre>
-      {{ jose.decodeJwt(idToken) }}
-      </pre>
-    </details>
-  </div>
+    <div v-if="idToken">
+      <details>
+        <summary>ID Token</summary>
+        <pre>
+        {{ jose.decodeJwt(idToken) }}
+        </pre>
+      </details>
+    </div>
 
-  <br>
-  <a @click="clientWithState.logout()">log out</a>
-    or <a @click="clientWithState.loginWithPrompt('login', undefined)">re-authenticate</a>
+    <br>
+    <a @click="clientWithState.logout()">log out</a>
+      or <a @click="clientWithState.loginWithPrompt({prompt: 'login'})">re-authenticate</a>
   </div>
 
   <div v-if="res == null">

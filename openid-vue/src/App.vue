@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { ref, onMounted, watch, computed } from "vue";
 import { RouterLink, RouterView } from 'vue-router'
 import * as clientWithState from './auth'
 
-const sessionState = clientWithState.sessionState()
-const iframeUrl = clientWithState.checkSessionIframe();
-const clientId = clientWithState.clientId();
+// const sessionState = clientWithState.sessionState()
+// const iframeUrl = clientWithState.checkSessionIframe();
+// const clientId = clientWithState.clientId();
+const sessionState = computed(() => clientWithState.sessionState() ?? null); // Make reactive
+const iframeUrl = ref(clientWithState.checkSessionIframe() || ""); // Handle undefined case
+const clientId = ref(clientWithState.clientId());
+
 
 let stat = "unchanged";
 let mes = clientId + " " + sessionState;
