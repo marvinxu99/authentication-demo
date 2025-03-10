@@ -1,4 +1,5 @@
 import * as client from "openid-client";
+import router from "@/router";
 import {
   Configuration,
   type FetchBody,
@@ -142,14 +143,14 @@ export async function init(server: URL, clientId: string, onSuccess: () => void)
   }
 }
 
-let state: { config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers, error?: String}
+let state: { config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers | null, error?: String}
 
 export function initState(config: Configuration, tokens: TokenEndpointResponse & TokenEndpointResponseHelpers, error?: String) {
   state = { config, tokens, error }
 }
 
 async function refreshOnDemand() {
-  if (state.tokens.expiresIn() === 0) {
+  if (state.tokens?.expiresIn() === 0) {
     await refresh();
   }
 }
@@ -190,13 +191,34 @@ export function clientId() {
 }
 
 export function logout() {
+  console.log("🔄 Logging out...");
+
+  // Clear session storage
+  sessionStorage.removeItem("session_active");
+  sessionStorage.removeItem("codeVerifier");
+  sessionStorage.removeItem("nonce");
+  sessionStorage.removeItem("code_used");
+
+  // Reset state
+  state.tokens = null;
+  state.error = undefined;
+
   let params : Record<string, string> = {
-    post_logout_redirect_uri: window.location.href,
+    // post_logout_redirect_uri: window.location.href,
+    post_logout_redirect_uri: window.location.origin,    // Redirect to home page
   };
   if (state.tokens.id_token) {
     params.id_token_hint = state.tokens.id_token
   }
+
+  console.log("Redirecting to logout:", client.buildEndSessionUrl(config, params).href);
   window.location.href = client.buildEndSessionUrl(config, params).href;
+
+   // Ensure Vue Router navigates to home page after logout
+   setTimeout(() => {
+    router.push("/");
+  }, 1000);
+
 }
 
 export function isRegistrationSupported() {
