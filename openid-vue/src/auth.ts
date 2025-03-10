@@ -97,7 +97,8 @@ export async function init(server: URL, clientId: string, onSuccess: () => void)
   if (params.has('error')) {
     initState(config, null, params.get('error'));
     onSuccess();
-  } else if (!params.has('code')) {
+  } else if (!params.has('code') && !sessionStorage.getItem("session_active")) {
+    sessionStorage.setItem("session_active", "true");
     loginWithPrompt({prompt: 'none' });
   } else if (params.has('code')) {
     // one eternity later, the user lands back on the redirect_uri
@@ -116,11 +117,19 @@ export async function init(server: URL, clientId: string, onSuccess: () => void)
 
     {
       let currentUrl: URL = new URL(window.location.href)
-      tokens = await client.authorizationCodeGrant(config, currentUrl, {
-        pkceCodeVerifier: code_verifier,
-        expectedNonce: nonce,
-        idTokenExpected: true
-      })
+      tokens = await client.authorizationCodeGrant(
+        config, 
+        currentUrl, 
+        {
+          pkceCodeVerifier: code_verifier,
+          expectedNonce: nonce,
+          idTokenExpected: true
+        },
+        {
+          client_id: client_id, // Ensure client_id is passed
+          client_secret: "PCCM9KFM9ESwDiPPGrp2UKlIXcLbBsQP" // Required for confidential clients
+        }
+      )
 
       console.log('Token Endpoint Response', tokens)
 

@@ -12,16 +12,16 @@ function accountConsole() {
   <div v-if="res">
     <details>
       <summary>User Info</summary>
-<pre>
-{{ JSON.stringify(res, null, 2) }}
-</pre>
+      <pre>
+      {{ JSON.stringify(res, null, 2) }}
+      </pre>
     </details>
   <div v-if="idToken">
     <details>
       <summary>ID Token</summary>
-<pre>
-{{ jose.decodeJwt(idToken) }}
-</pre>
+      <pre>
+      {{ jose.decodeJwt(idToken) }}
+      </pre>
     </details>
   </div>
 
@@ -31,7 +31,7 @@ function accountConsole() {
   </div>
 
   <div v-if="res == null">
-  Not logged int - <a @click="clientWithState.loginWithPrompt({ prompt: 'login'})">log in</a> or <a @click="clientWithState.loginWithPrompt({ prompt: 'login', par: true })">log in with PAR</a>
+    Not logged in - <a @click="clientWithState.loginWithPrompt({ prompt: 'login'})">log in</a> or <a @click="clientWithState.loginWithPrompt({ prompt: 'login', par: true })">log in with PAR</a>
     <span v-if="clientWithState.isRegistrationSupported()">
     or <a @click="clientWithState.loginWithPrompt({ prompt: 'create'})">register</a>
     </span>
